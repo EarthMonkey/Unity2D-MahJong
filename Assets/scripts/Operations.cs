@@ -9,39 +9,52 @@ public class Operations : MonoBehaviour
 
 	Stack<GameObject> paisStack; // 牌垛
 
-	List<GameObject> sortList;  // 重新排序后的牌list；始终维持最新变化
+	List<GameObject> leftPaiList;  // 左边牌
+	List<GameObject> rightPaiList; // 右边牌
+	List<GameObject> oppoPaiList;  // 对家牌
 
-	float paiWidth = 1.0f;   // 牌宽度
-	float outpaiWidth = 0.55f;  // 已出牌宽度
-	float outpaiHeight = 0.65f;
-	float paiduoWidht = 0.85f;  // 牌垛牌宽度
-	float paiduoHeight = 0.3f; // 牌垛牌高度
-	string[] types =  {"wan_", "tong_", "tiao_"};
+	List<GameObject> sortList;  // 重新排序后的牌list；始终维持最新变化
 
 	GameObject primeMaJiang;
 	GameObject primeOutPai;
 	GameObject primePaiDuo;
+	GameObject leftPai;
+	GameObject rightPai;
+	GameObject oppoPai;
 
-	GameObject canvas;
+	float paiWidth = 1.0f;   // 牌宽度
+	float outpaiWidth = 0.55f;  // 已出牌宽度
+	float outpaiHeight = 0.65f;
+	float paiduoWidht = 0.69f;  // 牌垛牌宽度
+	float paiduoHeight = 0.24f;  // 牌垛牌高度
+	float leftPaiHeight = 0.56f; // 左右侧牌高度 
+	float oppoWidth = 0.68f; // 对家牌高度
+	string[] types =  {"wan_", "tong_", "tiao_"};
 
 	void Start ()
 	{
 		paisStack = new Stack<GameObject> ();
+		leftPaiList = new List<GameObject> ();
+		rightPaiList = new List<GameObject> ();
+		oppoPaiList = new List<GameObject> ();
 
 		primeMaJiang = Resources.Load<GameObject> ("Prefabs/paiprefab");
 		primeOutPai = Resources.Load<GameObject> ("Prefabs/outprefab");
 		primePaiDuo = Resources.Load<GameObject> ("Prefabs/paiduo");
+		leftPai = Resources.Load<GameObject> ("Prefabs/leftpai");
+		rightPai = Resources.Load<GameObject> ("Prefabs/rightpai");
+		oppoPai = Resources.Load<GameObject> ("Prefabs/oppopai");
 	}
 
 	void Update() {
 
 	}
 
-	// 初始化我的牌
+	// 初始化麻将牌
 	public void setMaJiangs() {
 
+		/**我的牌*/
 		sortList = new List<GameObject>();  // 用来排序的list
-
 		primeMaJiang.transform.position = new Vector2(-0.2f - 13 * paiWidth/ 2, -4f);  // center layout
 		for (int i = 0; i < 13; i++) {
 			GameObject maj = (GameObject) GameObject.Instantiate (primeMaJiang);
@@ -62,6 +75,24 @@ public class Operations : MonoBehaviour
 			addSortList (maj, srcVal);
 		}
 
+		/**左右牌*/
+		for (int j = 0; j < 13; j++) {
+			GameObject lpai = (GameObject)GameObject.Instantiate (leftPai);
+			lpai.transform.position = new Vector2 (-7.9f, -2.7f + leftPaiHeight * j);
+			leftPaiList.Add (lpai);
+
+			GameObject rpai = (GameObject)GameObject.Instantiate (rightPai);
+			rpai.transform.position = new Vector2 (7.9f, -2.7f + leftPaiHeight * j);
+			rightPaiList.Add (rpai);
+		}
+
+		/**对家牌*/
+		float oppoX = -13 * oppoWidth / 2 + 0.5f;
+		for (int k = 0; k < 13; k++) {
+			GameObject opai = (GameObject)GameObject.Instantiate (oppoPai);
+			opai.transform.position = new Vector2 (oppoX + k * oppoWidth, 4.2f);
+			oppoPaiList.Add (opai);
+		}
 	}
 
 	// 初始化牌垛
