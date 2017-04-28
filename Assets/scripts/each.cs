@@ -50,7 +50,7 @@ public class each : MonoBehaviour {
 
 				op.play (this.value);
 				gameObject.SetActive(false);
-				op.adjustPos ();
+
 			} else {
 				transform.position = pos + new Vector2 (0, 0.8f);
 

@@ -9,6 +9,8 @@ public class Operations:MonoBehaviour
 
 	Stack<GameObject> paisStack; // 牌垛
 
+	static List<GameObject> sortList;  // 重新排序后的牌list；始终维持最新变化
+
 	float paiWidth = 1.0f;   // 牌宽度
 	float outpaiWidth = 0.55f;  // 已出牌宽度
 	float outpaiHeight = 0.65f;
@@ -29,12 +31,13 @@ public class Operations:MonoBehaviour
 		primeMaJiang = Resources.Load<GameObject> ("Prefabs/paiprefab");
 		primeOutPai = Resources.Load<GameObject> ("Prefabs/outprefab");
 		primePaiDuo = Resources.Load<GameObject> ("Prefabs/paiduo");
-	
-		sortPos ();
 	}
 
 	// 初始化我的牌
 	public void setMaJiangs() {
+
+		Operations.sortList = new List<GameObject>();  // 用来排序的list
+
 		primeMaJiang.transform.position = new Vector2(-0.2f - 13 * paiWidth/ 2, -4f);  // center layout
 		for (int i = 0; i < 13; i++) {
 			GameObject maj = (GameObject) GameObject.Instantiate (primeMaJiang);
@@ -51,7 +54,10 @@ public class Operations:MonoBehaviour
 			maj.transform.position = (Vector2)primeMaJiang.transform.position + new Vector2 ( paiWidth * i, 0);
 
 			maj.GetComponent<each>().setValue(srcVal);
+
+			addSortList (maj, srcVal);
 		}
+
 	}
 
 	// 初始化牌垛
@@ -86,6 +92,8 @@ public class Operations:MonoBehaviour
 
 		mopai.GetComponent<each> ().setValue (srcVal);
 
+		addSortList (mopai, srcVal);  // 添加到维持list
+
 		GameObject paiduo_out = (GameObject) paisStack.Pop();
 		paiduo_out.SetActive (false);
 	}
@@ -109,30 +117,53 @@ public class Operations:MonoBehaviour
 
 		outpai.GetComponent<outEach> ().setValue (val);
 
+		deleteSortList (val);  // 从维持list中删除已出的牌，并重新排序
+
 		// 出牌后，停止计时器，延迟2秒摸牌，并重新计时
 		GameObject camera = GameObject.Find("MainCamera");
 		camera.GetComponent<SetMyMajiang>().stopTime ();
 		camera.GetComponent<SetMyMajiang>().moPai_Set ();
 	}
 
-	// 调整牌位置
-	public void adjustPos() {
+	// 根据排好序的的list，调整牌位置；每次出牌后调整牌位置
+	public void sortPos() {
 
-		GameObject[] objs = GameObject.FindGameObjectsWithTag ("pai");
-		for (int i = 0; i < objs.Length; i++) {
-			//			print (objs [i].GetComponent<each> ().getValue ()); // 根据value来进行排序
-			objs [i].transform.position = new Vector2 (-0.2f - 13 * paiWidth/ 2 + paiWidth * i, -4f);
-			objs [i].GetComponent<each> ().setIsUp (0);
+		for (int i = 0; i < Operations.sortList.Count; i++) {
+			Operations.sortList [i].transform.position = new Vector2 (-0.2f - 13 * paiWidth/ 2 + paiWidth * i, -4f);
+			Operations.sortList [i].GetComponent<each> ().setIsUp (0);
 		}
 	}
 
-	// 位置排序
-	public void sortPos() {
+	// 摸牌添加到sortlist
+	void addSortList(GameObject obj, string srcVal) {
+		// 排序
+		if (Operations.sortList.Count == 0) {
+			Operations.sortList.Add (obj);
+		} else {
+			int isEnd = 0;  // 用来判断是否最大，若为0则插在末尾
+			for (int j = 0; j < Operations.sortList.Count; j++) {
+				string sortVal = Operations.sortList [j].GetComponent<each> ().getValue ();
+				if (string.Compare (srcVal, sortVal) <= 0) {
+					Operations.sortList.Insert (j, obj);
+					isEnd = 1;
+					break;
+				} 
+			}
+			if (isEnd == 0) {
+				Operations.sortList.Add (obj);
+			}
+		}
+	}
+		
+	public void deleteSortList(string val) {
 
-		GameObject[] objs = GameObject.FindGameObjectsWithTag ("pai");
-		GameObject[] sortObjs = new GameObject[objs.Length];
-
-
+		for (int i = 0; i < Operations.sortList.Count; i++) {
+			if (Operations.sortList [i].GetComponent<each> ().getValue ().Equals (val)) {
+				Operations.sortList.Remove (Operations.sortList [i]);
+				break;
+			}
+		}
+		sortPos ();
 	}
 
 	// 高亮显示牌
@@ -147,6 +178,5 @@ public class Operations:MonoBehaviour
 			}
 		}
 	}
-
 }
 

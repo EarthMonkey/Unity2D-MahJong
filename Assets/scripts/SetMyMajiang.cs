@@ -24,7 +24,7 @@ public class SetMyMajiang : MonoBehaviour {
 		op.setMaJiangs ();
 		op.setPaiDuo ();
 
-		moPai_Set (); // 1秒后执行摸牌，并开始倒计时
+		sortPos_set ();
 
 		start = -1;
 		totalTime = 0;
@@ -37,10 +37,20 @@ public class SetMyMajiang : MonoBehaviour {
 			Timer ();
 		}
 	}
-		
+
 	// 延迟执行
+	void sortPos_set () {
+		Invoke ("sortPosInvoke", 1f);  // 1秒后重新排序
+	}
+
+	void sortPosInvoke() {
+		op.sortPos ();
+
+		moPai_Set ();
+	}
+
 	public void moPai_Set() {
-		Invoke ("moPaiInvoke", 0.5f);
+		Invoke ("moPaiInvoke", 0.5f);  // 0.5秒后执行摸牌，并开始倒计时
 	}
 
 	void moPaiInvoke() {
@@ -72,7 +82,7 @@ public class SetMyMajiang : MonoBehaviour {
 			string val = lastObj.GetComponent<each> ().getValue ();
 			op.play (val);
 			lastObj.SetActive (false);
-			op.adjustPos ();
+//			op.adjustPos ();
 
 			TWICE = 1;
 			start = DURATION + 1;
