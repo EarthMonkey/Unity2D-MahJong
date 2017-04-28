@@ -14,6 +14,7 @@ public class Operations:MonoBehaviour
 	float outpaiHeight = 0.65f;
 	float paiduoWidht = 0.85f;  // 牌垛牌宽度
 	float paiduoHeight = 0.3f; // 牌垛牌高度
+	string[] types =  {"wan_", "tong_", "tiao_"};
 
 	GameObject primeMaJiang;
 	GameObject primeOutPai;
@@ -29,16 +30,20 @@ public class Operations:MonoBehaviour
 		primeOutPai = Resources.Load<GameObject> ("Prefabs/outprefab");
 		primePaiDuo = Resources.Load<GameObject> ("Prefabs/paiduo");
 	
+		sortPos ();
 	}
 
 	// 初始化我的牌
 	public void setMaJiangs() {
-		primeMaJiang.transform.position = new Vector2(-0.2f - 10 * paiWidth/ 2, -4f);  // center layout
-		for (int i = 0; i < 10; i++) {
+		primeMaJiang.transform.position = new Vector2(-0.2f - 13 * paiWidth/ 2, -4f);  // center layout
+		for (int i = 0; i < 13; i++) {
 			GameObject maj = (GameObject) GameObject.Instantiate (primeMaJiang);
 
 			SpriteRenderer spr = (SpriteRenderer)maj.GetComponent ("SpriteRenderer");
-			string srcVal = "wan_" + (i % 9 + 1);
+
+			System.Random rd = new System.Random ();
+			string srcVal = types[rd.Next(0, 3)] + rd.Next(1, 10);
+
 			Texture2D texture2d = (Texture2D)Resources.Load("pai/" + srcVal);
 			spr.sprite = Sprite.Create(texture2d,spr.sprite.textureRect,new Vector2(0.5f,0.5f));
 			spr.sortingOrder = 2;
@@ -67,11 +72,11 @@ public class Operations:MonoBehaviour
 	public void moPai() {
 		GameObject mopai = (GameObject)GameObject.Instantiate (primeMaJiang);
 
-		System.Random rd = new System.Random();
-		int val = rd.Next (1, 10);  // 随机数；=> 开始时传来随机序列，按顺序依次取牌
-
 		SpriteRenderer spr = (SpriteRenderer)mopai.GetComponent ("SpriteRenderer");
-		string srcVal = "wan_" + val;
+
+		System.Random rd = new System.Random(); 
+		string srcVal = types[rd.Next(0, 3)] + rd.Next(1, 10); // 随机数；=> 开始时传来随机序列，按顺序依次取牌
+
 		Texture2D t2d = (Texture2D)Resources.Load ("pai/" + srcVal);
 		spr.sprite = Sprite.Create (t2d, spr.sprite.textureRect, new Vector2 (0.5f, 0.5f));
 		spr.sortingOrder = 2;
@@ -116,9 +121,18 @@ public class Operations:MonoBehaviour
 		GameObject[] objs = GameObject.FindGameObjectsWithTag ("pai");
 		for (int i = 0; i < objs.Length; i++) {
 			//			print (objs [i].GetComponent<each> ().getValue ()); // 根据value来进行排序
-			objs [i].transform.position = new Vector2 (-5.2f + paiWidth * i, -4f);
+			objs [i].transform.position = new Vector2 (-0.2f - 13 * paiWidth/ 2 + paiWidth * i, -4f);
 			objs [i].GetComponent<each> ().setIsUp (0);
 		}
+	}
+
+	// 位置排序
+	public void sortPos() {
+
+		GameObject[] objs = GameObject.FindGameObjectsWithTag ("pai");
+		GameObject[] sortObjs = new GameObject[objs.Length];
+
+
 	}
 
 	// 高亮显示牌

@@ -24,9 +24,7 @@ public class SetMyMajiang : MonoBehaviour {
 		op.setMaJiangs ();
 		op.setPaiDuo ();
 
-		moPai_Set ();
-
-		 // 三秒后执行摸牌，并开始倒计时
+		moPai_Set (); // 1秒后执行摸牌，并开始倒计时
 
 		start = -1;
 		totalTime = 0;
@@ -42,7 +40,7 @@ public class SetMyMajiang : MonoBehaviour {
 		
 	// 延迟执行
 	public void moPai_Set() {
-		Invoke ("moPaiInvoke", 1);
+		Invoke ("moPaiInvoke", 0.5f);
 	}
 
 	void moPaiInvoke() {
