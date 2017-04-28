@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI; 
 
-public class Operations:MonoBehaviour
+public class Operations : MonoBehaviour
 {
 
 	Stack<GameObject> paisStack; // 牌垛
 
-	static List<GameObject> sortList;  // 重新排序后的牌list；始终维持最新变化
+	List<GameObject> sortList;  // 重新排序后的牌list；始终维持最新变化
 
 	float paiWidth = 1.0f;   // 牌宽度
 	float outpaiWidth = 0.55f;  // 已出牌宽度
@@ -24,7 +24,7 @@ public class Operations:MonoBehaviour
 
 	GameObject canvas;
 
-	public Operations ()
+	void Start ()
 	{
 		paisStack = new Stack<GameObject> ();
 
@@ -33,10 +33,14 @@ public class Operations:MonoBehaviour
 		primePaiDuo = Resources.Load<GameObject> ("Prefabs/paiduo");
 	}
 
+	void Update() {
+
+	}
+
 	// 初始化我的牌
 	public void setMaJiangs() {
 
-		Operations.sortList = new List<GameObject>();  // 用来排序的list
+		sortList = new List<GameObject>();  // 用来排序的list
 
 		primeMaJiang.transform.position = new Vector2(-0.2f - 13 * paiWidth/ 2, -4f);  // center layout
 		for (int i = 0; i < 13; i++) {
@@ -94,7 +98,7 @@ public class Operations:MonoBehaviour
 
 		addSortList (mopai, srcVal);  // 添加到维持list
 
-		GameObject paiduo_out = (GameObject) paisStack.Pop();
+		GameObject paiduo_out = paisStack.Pop();
 		paiduo_out.SetActive (false);
 	}
 
@@ -120,46 +124,46 @@ public class Operations:MonoBehaviour
 		deleteSortList (val);  // 从维持list中删除已出的牌，并重新排序
 
 		// 出牌后，停止计时器，延迟2秒摸牌，并重新计时
-		GameObject camera = GameObject.Find("MainCamera");
-		camera.GetComponent<SetMyMajiang>().stopTime ();
-		camera.GetComponent<SetMyMajiang>().moPai_Set ();
+		SetMyMajiang setMy = GameObject.Find ("MainCamera").GetComponent<SetMyMajiang> ();
+		setMy.stopTime ();
+		setMy.moPai_Set ();
 	}
 
 	// 根据排好序的的list，调整牌位置；每次出牌后调整牌位置
 	public void sortPos() {
 
-		for (int i = 0; i < Operations.sortList.Count; i++) {
-			Operations.sortList [i].transform.position = new Vector2 (-0.2f - 13 * paiWidth/ 2 + paiWidth * i, -4f);
-			Operations.sortList [i].GetComponent<each> ().setIsUp (0);
+		for (int i = 0; i < sortList.Count; i++) {
+			sortList [i].transform.position = new Vector2 (-0.2f - 13 * paiWidth/ 2 + paiWidth * i, -4f);
+			sortList [i].GetComponent<each> ().setIsUp (0);
 		}
 	}
 
 	// 摸牌添加到sortlist
 	void addSortList(GameObject obj, string srcVal) {
 		// 排序
-		if (Operations.sortList.Count == 0) {
-			Operations.sortList.Add (obj);
+		if (sortList.Count == 0) {
+			sortList.Add (obj);
 		} else {
 			int isEnd = 0;  // 用来判断是否最大，若为0则插在末尾
-			for (int j = 0; j < Operations.sortList.Count; j++) {
-				string sortVal = Operations.sortList [j].GetComponent<each> ().getValue ();
+			for (int j = 0; j < sortList.Count; j++) {
+				string sortVal = sortList [j].GetComponent<each> ().getValue ();
 				if (string.Compare (srcVal, sortVal) <= 0) {
-					Operations.sortList.Insert (j, obj);
+					sortList.Insert (j, obj);
 					isEnd = 1;
 					break;
 				} 
 			}
 			if (isEnd == 0) {
-				Operations.sortList.Add (obj);
+				sortList.Add (obj);
 			}
 		}
 	}
 		
 	public void deleteSortList(string val) {
 
-		for (int i = 0; i < Operations.sortList.Count; i++) {
-			if (Operations.sortList [i].GetComponent<each> ().getValue ().Equals (val)) {
-				Operations.sortList.Remove (Operations.sortList [i]);
+		for (int i = 0; i < sortList.Count; i++) {
+			if (sortList [i].GetComponent<each> ().getValue ().Equals (val)) {
+				sortList.Remove (sortList [i]);
 				break;
 			}
 		}

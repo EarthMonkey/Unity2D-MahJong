@@ -21,8 +21,7 @@ public class each : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		op = new Operations ();
-//		render = (Renderer) GetComponent("Renderer");
+		op = GameObject.Find("MainCamera").GetComponent<Operations>();
 	}
 	
 	// Update is called once per frame

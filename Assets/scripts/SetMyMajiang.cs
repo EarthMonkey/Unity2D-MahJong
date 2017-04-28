@@ -17,7 +17,7 @@ public class SetMyMajiang : MonoBehaviour {
 	void Start () {
 		DURATION = 8;  // 8秒倒计时
 		TWICE = 1;
-		op = new Operations ();
+		op = GameObject.Find("MainCamera").GetComponent<Operations>();
 
 		text = GameObject.Find ("Canvas").GetComponent<Text> ();
 
