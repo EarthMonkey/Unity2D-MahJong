@@ -11,7 +11,7 @@ public class each : MonoBehaviour {
 
 	int isUp = 0;  // 0未上移，1已上移
 
-	int myTurn = 1;  
+	static int myTurn = 1;  
 	/* 判断是否轮到出牌；0-未轮到；1-轮到
 	 * 若轮到出牌，第一次点击，牌上移；第二次点击，出牌
 	 * 若未轮到，则第一次点击上移，第二次，无变化
@@ -75,5 +75,14 @@ public class each : MonoBehaviour {
 
 	public void setIsUp(int isUp) {
 		this.isUp = isUp;
+	}
+
+	// 0未轮到我；1轮到我
+	public static void setMyTurn(int turn) {
+		each.myTurn = turn;
+	}
+
+	public static int getMyTurn() {
+		return each.myTurn;
 	}
 }

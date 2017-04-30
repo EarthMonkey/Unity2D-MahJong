@@ -17,8 +17,8 @@ public class SetMyMajiang : MonoBehaviour {
 	void Start () {
 		DURATION = 8;  // 8秒倒计时
 		TWICE = 1;
-		op = GameObject.Find("MainCamera").GetComponent<Operations>();
 
+		op = GameObject.Find("MainCamera").GetComponent<Operations>();
 		text = GameObject.Find ("Canvas").GetComponent<Text> ();
 
 		op.setMaJiangs ();
@@ -40,7 +40,7 @@ public class SetMyMajiang : MonoBehaviour {
 
 	// 延迟执行
 	void sortPos_set () {
-		Invoke ("sortPosInvoke", 1f);  // 1秒后重新排序
+		Invoke ("sortPosInvoke", 1.5f);  // 1秒后重新排序
 	}
 
 	void sortPosInvoke() {
@@ -76,13 +76,8 @@ public class SetMyMajiang : MonoBehaviour {
 
 		if (start == 0 && TWICE == 0) {
 			start = -1;
-			// 规定时间内没有出牌则自动出最后一张牌
-			GameObject[] pais = GameObject.FindGameObjectsWithTag ("pai");
-			GameObject lastObj = pais [pais.Length - 1];
-			string val = lastObj.GetComponent<each> ().getValue ();
-			op.play (val);
-			lastObj.SetActive (false);
-//			op.adjustPos ();
+
+			op.autoPlay ();
 
 			TWICE = 1;
 			start = DURATION + 1;
