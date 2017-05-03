@@ -1,9 +1,5 @@
 
-Temp/
-
 Temp/*
-
-Temp/*/
 
 Library/*
 
@@ -16,5 +12,3 @@ Library/*
 *.mdb
 
 *.dll
-
-Temp/bin/Debug/Mono.Cecil.Mdb.dll
